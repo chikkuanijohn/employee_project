@@ -38,7 +38,7 @@
 
 import React,{ component } from "react";
 import TaskList from "./component/TaskList.jsx"
-import AddTask from './component/AddTask'
+import AddTask from './component/AddDetails.jsx'
 
 function App() {
   return(
