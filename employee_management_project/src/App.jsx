@@ -38,13 +38,13 @@
 
 import React,{ component } from "react";
 import TaskList from "./component/TaskList.jsx"
-import AddTask from './component/AddDetails.jsx'
+import AddDetails from './component/AddDetails.jsx'
 
 function App() {
   return(
     <div className="App">
       <h1>Employee management project</h1>
-      <AddTask />
+      <AddDetails />
       <TaskList/>
 
     </div>
