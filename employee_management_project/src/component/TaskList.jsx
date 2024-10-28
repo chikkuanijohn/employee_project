@@ -160,17 +160,19 @@ import axios from 'axios'
 
 const TaskList=()=>{
     const [employs,setEmp]=useState([]);
+    const[seremp,setSerEmp]=useState([]);
+    const[filteredemp,setFilteredEmpm]=useState([]);
     const [editing,setEditing]=useState(false);
     const [currentEmp, setCurrentEmp]= useState({id:null,empid:'',name:'',address:'',position:''});
 
     useEffect(()=>{
-        axios.get('https://aiswarya2325.pythonanywhere.com/employemanagement/employees/')
+        axios.get(`https://alan2325.pythonanywhere.com/employe/employees/`)
         .then(response => setEmp(response.data))
         .catch(error => console.log(error));
     },[]);
 
     const deleteDtls =(id) =>{
-        axios.delete(`https://aiswarya2325.pythonanywhere.com/employemanagement/employees/${id}/`)
+        axios.delete(`https://alan2325.pythonanywhere.com/employe/employees/${id}/`)
         .then(response =>{
             setEmp(employs.filter(emp=> emp.id !== id));
         })
@@ -184,18 +186,26 @@ const TaskList=()=>{
 
     const updateDtls=(id,updatedDtls)=>{
         setEditing(false);
-        axios.put(`https://aiswarya2325.pythonanywhere.com/employemanagement/employees/${id}/`,updatedDtls)
+        axios.put(`https://alan2325.pythonanywhere.com/employe/employees/${id}/`,updatedDtls)
         .then(response=>{
             setEmp(employs.map(dtl=>(dtl.id===id? response.data:dtl)));
         })
-        .catch(error=>console.log(error));
-    }
+        .catch(error=>console.log(error))
+    };
+    useEffect(()=>{
+        const result=employs.filter(e=>
+            e.name.includes(seremp) || e.position.includes(seremp)
+
+        );
+        setFilteredEmpm(result)
+    },[seremp,employs])
     
     return(
         <div className="container mt-3">
             <h2>Employee Table</h2>
+            <input type="text" placeholder="Search" value={seremp} onChange={(e)=>setSerEmp(e.target.value)}/>
             <table className="table table-bordered table-hover">
-                {employs.map(emp => (
+                {filteredemp.map(emp => (
                     <tr key={emp.id}>
                         <td>{emp.empid}</td>
                         <td>{emp.name}</td>
@@ -260,4 +270,3 @@ const TaskList=()=>{
      );
  };
 export default TaskList
-    
