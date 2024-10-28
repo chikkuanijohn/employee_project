@@ -153,21 +153,23 @@
 // export default TaskList
 
 
-
 import React,{useState,useEffect} from "react";
 import axios from 'axios'
 
 
 const TaskList=()=>{
     const [employs,setEmp]=useState([]);
-    const[seremp,setSerEmp]=useState([]);
-    const[filteredemp,setFilteredEmpm]=useState([]);
+    const [seremp,setSerEmp]=useState([]);
+    const [filteredemp,setFilteredEmp]=useState([]);
     const [editing,setEditing]=useState(false);
     const [currentEmp, setCurrentEmp]= useState({id:null,empid:'',name:'',address:'',position:''});
 
     useEffect(()=>{
-        axios.get(`https://alan2325.pythonanywhere.com/employe/employees/`)
-        .then(response => setEmp(response.data))
+        axios.get('https://alan2325.pythonanywhere.com/employe/employees/')
+        .then(response =>{ 
+            setEmp(response.data)
+            setFilteredEmp(response.data)
+        })
         .catch(error => console.log(error));
     },[]);
 
@@ -190,31 +192,54 @@ const TaskList=()=>{
         .then(response=>{
             setEmp(employs.map(dtl=>(dtl.id===id? response.data:dtl)));
         })
-        .catch(error=>console.log(error))
+        .catch(error=>console.log(error));
     };
-    useEffect(()=>{
-        const result=employs.filter(e=>
-            e.name.includes(seremp) || e.position.includes(seremp)
 
+    useEffect(() => {
+        const result = employs.filter(e =>
+            e.name.includes(seremp) ||
+            e.position.includes(seremp) ||
+            e.experiance.toString().includes(seremp) ||
+            e.salary.toString().includes(seremp)
         );
-        setFilteredEmpm(result)
-    },[seremp,employs])
+        setFilteredEmp(result);
+    }, [seremp, employs]);
+    
+    
     
     return(
         <div className="container mt-3">
             <h2>Employee Table</h2>
-            <input type="text" placeholder="Search" value={seremp} onChange={(e)=>setSerEmp(e.target.value)}/>
+            <input type="search" placeholder="search" value={seremp} onChange={(e)=>setSerEmp(e.target.value)}/>
             <table className="table table-bordered table-hover">
-                {filteredemp.map(emp => (
+             <thead>
+                <tr>
+                    <td>Emp id</td>
+                    <td>Name</td>
+                    <td>Address</td>
+                    <td>Position</td>
+                    <td>Experiance</td>
+                    <td>Salary</td>
+                    <td>Email</td>
+                    <td>Phone Number</td>
+                </tr>
+            </thead>   
+            <tbody>
+             {filteredemp.map(emp => (
                     <tr key={emp.id}>
                         <td>{emp.empid}</td>
                         <td>{emp.name}</td>
                         <td>{emp.address}</td>
                         <td>{emp.position}</td>
+                        <td>{emp.experiance}</td>
+                        <td>{emp.salary}</td>
+                        <td>{emp.email}</td>
+                        <td>{emp.phone}</td>
                         <td><button className="btn btn-warning px-3" onClick={() =>editDetails(emp)}>Edit</button></td>
                         <td><button className="btn btn-danger" onClick={() =>deleteDtls(emp.id)}>Delete</button></td>
                     </tr>
                 ))}
+            </tbody>   
             </table>
             {editing ?(
                 <EditTaskForm
@@ -270,3 +295,4 @@ const TaskList=()=>{
      );
  };
 export default TaskList
+    
